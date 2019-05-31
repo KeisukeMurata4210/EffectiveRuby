@@ -100,12 +100,14 @@ class SingletonMethodWatcher
   # singleton_method_undefined(:hello)呼び出しを引き起こす
   class << self; undef_method(:hello); end
 end
-
+# クラスメソッド＝特異クラスのメソッドだから、<< self で追加している。
 
 
 
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞
-
+・全てのフックはクラスメソッドとして実装する。
+・フックメソッドが内部で呼び出しているメソッドはオーバーライドしない。
+・singleton_method_addedを定義すると、自分自身の呼び出しが発生する。
 =end
