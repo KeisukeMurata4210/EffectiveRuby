@@ -12,8 +12,8 @@ module SuperForwardable
       target_method = "#{method}_with_super".to_sym
       def_delegator(target, method, target_method) # メソッド名_with_superという名前でターゲットオブジェクトのそのメソッドを呼び出せる。
 
-      define_method(method) do |*args, &block|
-        send(target_method, *args, &block)
+      define_method(method) do |*args, &block| # このブロックはインスタンスメソッドmethod(=freeze, taint, untaint)を定義するだけ。
+        send(target_method, *args, &block) # このRaisingHashクラスへのtarget_method呼び出しは、上のdef_delegatorによってtarget(=@hash)へのmethod呼び出しになる
         super(*args, &block)
       end
     end
@@ -48,6 +48,62 @@ class RaisingHash
     @hash = hash
   end
 end
+
+
+
+# 継承時に親クラスで呼ばれるフックinheritedを使って継承を禁止する。
+module PreventInheritance
+  class InheritanceError < StandardError; end
+
+  def inherited (child) # そう。extendすればクラスメソッドになるからこれでOK
+    raise(InheritanceError, "#{child} cannot inherit from #{self}")
+  end
+end
+Array.extend(PreventInheritance)
+class BetterArray < Array; end # => PreventInheritance::InheritanceError: BetterArray cannot inherit from Array
+# inheritedフックが実行されたときは、まだ子クラスは完全には定義されてない。
+
+
+
+class InstanceMethodWatcher
+  def self.method_added (m); end
+  def self.method_removed (m); end
+  def self.method_undefined (m); end
+
+  # method_added(:hello)呼び出しを引き起こす
+  def hello; end
+
+  # method_removed(:hello)呼び出しを引き起こす
+  remove_method(:hello)
+
+  # method_added(:hello)呼び出しを引き起こす
+  def hello; end
+
+  # method_undefined(:hello)呼び出しを引き起こす
+  undef_method(:hello)
+end
+
+class SingletonMethodWatcher
+  def self.singleton_method_added (m); end     # 定義した時点でsingleton_method_addedが呼び出される。
+  def self.singleton_method_removed (m); end   # 定義した時点でsingleton_method_addedが呼び出される。
+  def self.singleton_method_undefined (m); end # 定義した時点でsingleton_method_addedが呼び出される。
+
+  # singleton_method_added(:hello)呼び出しを再び引き起こす
+  def self.hello; end
+
+  # singleton_method_removed(:hello)呼び出しを再び引き起こす
+  class << self; remove_method(:hello); end
+
+  # singleton_method_added(:hello)呼び出しを再び引き起こす
+  def self.hello; end
+
+  # singleton_method_undefined(:hello)呼び出しを引き起こす
+  class << self; undef_method(:hello); end
+end
+
+
+
+
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞
