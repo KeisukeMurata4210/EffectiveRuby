@@ -27,7 +27,8 @@ end
 
 class AnnualWeather
   # 観測データを保持する新しいStructクラスを作る
-  Reading = Struct.new(:date, :high, :low)
+  Reading = Struct.new(:date, :high, :low) 
+  # Struct.new(メッセージ名のシンボル, ...)でStructクラスを定義した後、更にReading.new(対応する値, ...)でオブジェクトを作成する
 
   def initialize (file_name)
     @readings = []
@@ -56,7 +57,7 @@ Reading = Struct.new(:date, :high, :low) do
     (high + low) / 2.0
   end
 end
-# インターフェース上の問題は解決したため、@readingsをattr_accessorで公開もできる
+# インターフェース上の問題（ハッシュのキーが外部から見えてしまう）は解決したため、@readingsをattr_accessorで公開もできる
 
 
 =begin

@@ -26,11 +26,10 @@ class Person
   include(ThingsWithNames)
 end
 
-Person.superclass # => Object
+Person.superclass # => Object 特異クラスは無名で見えないので、階層構造には含まれない
 customer = Customer.new
 customer.respond_to?(:name) # => true
 # includeすると、被インクルードクラスに特異クラスを作り、定数とメソッドを共有する
-# 特異クラスは無名で見えないので、階層構造には含まれない
 # 後入れ先出し＝最後にミックスインしたモジュールから先にメソッドを探す
 # モジュールで被インクルードクラスのメソッドをオーバーライドすることはできない。まずクラスをチェックしてからモジュールに向かう
 
@@ -41,8 +40,8 @@ def customer.name
   "Leonard"
 end
 # これは「特異メソッド」を定義している。
-# 特異クラスを作成→インスタンスメソッドとしてnameメソッドをインストール→customerオブジェクトのクラスとしてこの無名クラスを挿入
-# クラスは多くのオブジェクトのために働いているが、特異クラスはそのオブジェクト一つのために働く
+# 特異クラスを作成→その特異クラスのインスタンスメソッドとしてnameメソッドを作成→customerオブジェクトのクラスとしてこの無名クラスを挿入
+# クラスは自身から作成される全てのオブジェクトのために働くが、特異クラスはそのオブジェクト一つ（ここではcustomerオブジェクト）のために働く
 
 
 
@@ -55,7 +54,8 @@ Customer.singleton_class.instance_methods(false) # => [:where_am_i?]
 # *instance_methodsはインスタンスメソッド名の配列を返し、falseにすると親クラス分は含まれない
 Customer.superclass                 # => Person
 Customer.singleton_class.superclass # => <Class:Person>
-# クラスメソッドは、クラスの特異クラスのインスタンスメソッド、として格納される
+# クラスメソッドは、クラスの特異クラスが持つインスタンスメソッド、として格納される
+#  = self は Customerだから、「where_am_i?」はCustomerクラスというオブジェクトの特異メソッドとして定義される
 
 
 =begin

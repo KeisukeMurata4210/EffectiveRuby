@@ -13,7 +13,7 @@ class Child < Parent
     @grade = 8
   end
 end
-# これだとインスタンス変数nameが初期化されない
+# Childのインスタンスを作成した時に、変数nameが初期化されずnilになる。
 
 class Child < Parent
   attr_accessor(:name, :grade)

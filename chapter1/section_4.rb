@@ -9,15 +9,22 @@ end
 
 Defaults.freeze # <= こうすることで定数NETWORKSへの代入も防げる
 
+
+
+
 def purge_unreachable (networks=Defaults::NETWORKS) # 代入=は右辺のポインタを渡すから、代入されたものを変更すると呼び出し元も変更される
-  networks.delete_if do |net| # 定数なのにdeleteされるよ。定数というよりグローバル変数
+  networks.delete_if do |net| # 一番上のNETWORKS定義の場合、定数なのにdeleteされるよ。定数というよりグローバル変数
     !ping(net + ".1")
   end
 end
 
 def host_addresses (host, networks=Defaults::NETWORKS)
-  networks.map {|net| net << "#{host}"} # String#<<はレシーバ自信を変更する
+  networks.map {|net| net << "#{host}"} # String#<<はレシーバ自信を変更する。二番目のNETWORKS定義の場合、要素が書き換えられる。
 end
+
+Defaults::NETWORKS = 5 # => 三番目のNETWORKS定義でも、警告は出るが例外にはならない。
+# Defaults.freezeすれば例外を発生してくれる。
+
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞

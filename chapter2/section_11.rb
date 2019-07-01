@@ -34,15 +34,18 @@ end
 module SuperDumbCrypto
   KEY = "password123"
 end
-
 class Encrypt
   def initialize (key=KEY) # これはNameErrorが発生する。レキシカルスコープ内・継承階層経由のどちらもKEYが見つからないから
     # ...
   end
 end
+
 # これなら動く
-class SuperDumbCrypto::Encrypt
-  def initialize (key=SuperDumbCrypto::KEY) # トップレベル定数はObjectクラスに格納されている。継承階層を辿っていき、ObjectからKEYを見つけ出す。
+module SuperDumbCrypto
+  KEY = "password123"
+end
+class SuperDumbCrypto::Encrypt # SuperDumbCrypto内にクラスを定義
+  def initialize (key=SuperDumbCrypto::KEY) # 継承階層を辿っていき、ObjectクラスからSuperDumbCrypto → KEYを見つけ出す。
     # ...
   end
 end

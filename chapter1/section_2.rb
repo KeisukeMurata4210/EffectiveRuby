@@ -9,11 +9,11 @@ puts fix_title("aaa")
 puts fix_title(nil)
 
 puts nil.to_a # => []
-puts nil.to_i
-puts nil.to_f
+puts nil.to_i # => 0
+puts nil.to_f # => 0.0
 
 middle = nil
-name = ["first", middle, "last"].compact.join(" ")
+name = ["first", middle, "last"].compact.join(" ") # Array#compact は、レシーバーをコピーしたものから全てのnilを取り除いたものを返す
 puts name
 
 =begin

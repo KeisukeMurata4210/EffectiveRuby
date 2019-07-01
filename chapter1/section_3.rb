@@ -8,7 +8,7 @@ end
 
 def edited_extract_error (message)
   if m = message.match(/^ERROR:\s+(.+)$/)
-    m[1]#戻り値はMatchDataオブジェクトというローカル変数で、ローカル変数らしい名前をつけられる
+    m[1]#戻り値はMatchDataオブジェクトというローカル変数で、ローカル変数らしい名前（m以外でもなんでも）をつけられる
   else
     "no error"
   end

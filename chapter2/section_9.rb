@@ -7,7 +7,7 @@ class SetMe
     @value
   end
 
-  def value= (x) # これが、セッターメソッドの呼び出しか変数への代入か紛らわしい時がある
+  def value= (x) # これが、メソッドの呼び出しなのかインスタンス変数への代入なのか紛らわしい
     @value = x
   end
 end
@@ -18,7 +18,7 @@ class Counter
   attr_accessor(:counter)
   def initialize
     counter = 0      # これはセッターの呼び出しにも思えるが、ローカル変数への代入
-    self.counter = 0 # これはセッターの呼び出し。レシーバを明示的に追加する規則によって識別している
+    self.counter = 0 # これはセッターの呼び出し。明示的にselfをつけることでセッターの呼び出しであると識別する
   end
 end
 
@@ -38,6 +38,6 @@ end
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞
-・インスタンスメソッドからセッターを呼び出すときはselfをつける。
+・インスタンスメソッドから自身のセッターを呼び出すときはselfをつける。
 ・それ以外の場合ではselfは要らない。selfをつけすぎてコードを汚さないこと。
 =end
