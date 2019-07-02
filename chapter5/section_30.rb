@@ -66,7 +66,7 @@ class AuditDecorator
     @logger = Logger.new($stdout)
 
     mod = Module.new do
-      object.public_methods.each do |name|
+      object.public_methods.each do |name| # @objectとしてしまうと、モジュール固有の変数@objectを探してしまう。だからobject
         define_method(name) do |*args, &block|
           @logger.info("calling '#{name}' on #{@object.inspect}")
           @object.send(name, *args, &block)
@@ -88,10 +88,31 @@ fake.class
 # I, [2019-07-02T15:08:02.270377 #3457]  INFO -- : calling 'class' on "I'm a String!"
 # => String
 
+require('logger')
+class AuditDecorator
+  def initialize (object)
+    @object = object
+    @logger = Logger.new($stdout)
 
+    @object.public_methods.each do |name|
+      define_singleton_method(name) do |*args, &block|
+        @logger.info("calling '#{name}' on #{@object.inspect}")
+        @object.send(name, *args, &block)
+      end
+    end
+    # define_methodはクラスとモジュールしか反応しない。define_singleton_methodはオブジェクトに反応する。つまりこの行は、自分自身（AuditDecoratorインスタンス）に直接メソッドを定義しているのと同じ。
+    # 上の無名モジュールを使うやり方は、インスタンスの特異メソッドを定義している事になる。インスタンス自信をレシーバとして呼び出すから、結局インスタンスメソッドを定義したのと同じ。
+  end
+end
+
+# これで@hashが応答するメソッドであれば、response_to?で確認した時にtrueを返せる
+def respond_to_missing? (name, include_private)
+  @hash.respond_to?(name, include_private) || super
+end
 
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞
-
+・method_missingではなくdefine_methodを使う
+・どうしても使うときはresponse_to_missingとの併用を考える。
 =end
