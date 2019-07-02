@@ -1,10 +1,10 @@
 raise("coffee machine low on water")
 # これと同じ意味
 raise(RuntimeError, "coffee machine low on water")
-# RuntimeErrorは「何かまずいことが起きた」というエラーに過ぎない。他のプログラマーにとって役に立たない。
+# RuntimeErrorは「何かまずいことが起きた」という意味しか持たない。そのため他のプログラマーにとって役に立たない。
 # 例外クラスを作るべし。
 
-# rescue節はクラスまたはスーパークラスがStandardErrorになっている全ての例外に割り込むので、StandardErrorを継承させる。
+# rescue節はクラスまたはスーパークラスがStandardErrorになっている全ての例外に割り込む。だからStandardErrorを継承させる。
 class CoffeeTooWeakError < StandardError; end
 raise(CoffeeTooWeakError, "coffee to water ratio too low")
 

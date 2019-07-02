@@ -25,7 +25,7 @@ class Tuner
   private
     def clean (presets)
       # 有効な周波数は、末尾が奇数
-      presets.reject {|f| f[-1].to_i.even?}
+      presets.reject {|f| f[-1].to_i.even?} # Array#reject は、戻り値がtrueの要素を除いた新しい配列を返す
     end
 end
 # しかし、初期化した後で書き換えが必要な時に同じ問題が発生してしまう。
@@ -51,7 +51,7 @@ end
 
 # シャローコピー：コピー元とコピー先が同じメモリを参照している
 # ディープコピー：コピー元とコピー先の参照先が違う。メモリそのものからコピーを作る。
-# コレクションオブジェクトに対してclone / dupを呼び出すと、コンテナ自体はコピーが作られるが要素はシャローコピーになる。
+# コレクションオブジェクトに対してclone / dupを呼び出すと、コンテナ自体はディープコピーだが要素はシャローコピーになる。
 a = ["Polar"]
 b = a.dup << "Bear" # => ["Polar", "Bear"]   この時、aの"Polar"とbの"Polar"は同じメモリを参照している。
 b.each {|x| x.sub!('lar', 'oh')} # => ["Pooh", "Bear"]

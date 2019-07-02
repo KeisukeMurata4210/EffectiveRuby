@@ -1,5 +1,6 @@
 # コアライブラリは標準でロードされる。標準ライブラリはもっと豊かだが、requireでロードする必要がある。
 
+# ①配列を使う場合
 class Role
   def initialize (name, permissions)
     @name, @permissions = name, permissions
@@ -9,28 +10,26 @@ class Role
     @permissions.include?(permission) # 配列を想定している。
   end
 end
-# 配列は数が多くなるほど処理が遅くなる。含まれているかどうかをチェックするだけならもっといい方法がある。
-# 探索時間はHashの方が短い。
+# 配列は数が多くなるほど処理が遅くなる。
 
-
-
+# ②ハッシュを使う場合
 class Role
   def initialize (name, permissions)
     @name = name
-    @permissions = Hash[permissions.map {|p| [p, true]}] # リストだけが必要でキー：値のペアはいらないとき、trueをよく使う。配列の配列を渡すとよしなになる。
+    @permissions = Hash[permissions.map {|p| [p, true]}] # 2次元配列をHash::[]の引数に渡すとハッシュが作れる
+    # リストだけが必要でキー：値のペアはいらないとき、trueをよく使う。
   end
 
   def can? (permission)
     @permissions.include?(permission) # 配列を想定している。
   end
 end
-# 配列を使うときのトレードオフ2つ
-# ①重複する要素は失われる。今回のpermissionsの場合は問題なし。
-# ②Hashを作るために引数permissionsよりもっと大きな配列を作っている。
+# 配列よりも速く探索できる。
+# 重複した要素がある場合キーが重複する。そのため片方が失われる。
+# Hashを作るために引数permissionsよりもっと大きな配列（２次元配列）を作っている。
 #  => can?のコストをinitializeに肩代わりさせているので、can?を呼び出す回数が少なければ節約にならない。
 
-
-
+# ③Setを使う場合
 require('set')
 class Role
   def initialize (name, permissions)
@@ -41,9 +40,9 @@ class Role
     @permissions.include?(permission)
   end
 end
-# Hashを使う場合と要件は同じで、can?を呼び出す回数がinitializeより多いこと。
-# 要素が含まれているかどうかを調べるにはSetが一番いい。パフォーマンスと使いやすさから。
-# Setも渡された要素をHashに格納する。permission => true, のような形で変換する、ということ。
+# 処理の速さ、重複が失われること、can?の呼び出し回数が少なければ節約にならないこと、は②Hashの場合と同じ。
+# 使いやすさという点でSetの方がいい
+
 
 require('set')
 require('csv')

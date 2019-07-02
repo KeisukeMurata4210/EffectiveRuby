@@ -43,7 +43,7 @@ class Lock
     if block_given? # ブロックが付けられているかどうか判定するヘルパーメソッド
       yield(lock)
     else
-      lock　# Lock::newのように動作する
+      lock　# ただlockを返すだけ。Lock::acquireがLock::newのように動作する
     end
   ensure
     if block_given?

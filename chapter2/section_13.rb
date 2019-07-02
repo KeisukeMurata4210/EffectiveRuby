@@ -7,15 +7,17 @@ class Version
 end
 vs = %w(1.0.0 1.11.1 1.9.0).map {|v| Version.new(v)}
 # => [#<Version:0x00007fd23aa72830 @major=1, @minor=0, @patch=0>, #<Version:0x00007fd23aa726c8 @major=1, @minor=11, @patch=1>, #<Version:0x00007fd23aa72510 @major=1, @minor=9, @patch=0>] 
-vs.sort # Array#sortは内部でModule#<=>を呼び出し、結果にしたがって並び替える
+
+vs.sort
 # => ArgumentError: comparison of Version with Version failed
+# Array#sortは各引数に対して<=>を呼び出して順序を決める。Versionオブジェクトから<=>の呼び出しができないため、エラーになる。
 
 # デフォルトでは同じオブジェクトかどうかを調べ、同じなら0、Rubyのメソッド探索順で左辺が先なら-1、後なら1、階層上の関係がなければnil
 # とはいえ数値の大小は扱ってくれる。いやこれ、数値型のクラスでオーバーライドされてるから？ ドキュメントには出てこないけど。
 9 <=> "9" # => nil
 9 <=> 10  # => -1
 10 <=> 9  # => 1
-10 <=> 10 # =< 0
+10 <=> 10 # => 0
 
 
 

@@ -1,9 +1,14 @@
+# ①Object#==
 "foo" == "foo" # => true
-"foo".equal?("foo") # => false Object#equal?は、二つのオブジェクトが同じメモリを指しているかどうかを判定する
-1 == 1.0 # => true Object#==は、数値型は暗黙的にキャストする。
-# Object#equal?に依存するクラスがあるので、これをオーバーライドしてはいけない。
+1 == 1.0 # => true 数値型は暗黙的にキャストする。
 
-# Hashクラスでキーが同じと判定するのは、①キーの値のハッシュ値が同じ、かつ、②eql?メソッドで比較してtrueになるとき
+
+# ②Object#equal?
+"foo".equal?("foo") # => false つのオブジェクトが同じメモリを指しているかどうかを判定する
+# このメソッドに依存するクラスがあるのでオーバーライドしてはいけない。
+
+
+# ③Object#eql? Object#equal?と同じ。 String#eql?はオーバーライドされ、==と同じ挙動をする
 class Color
   def initialize (name)
     @name = name
@@ -11,10 +16,9 @@ class Color
 end
 a = Color.new("pink")
 b = Color.new("pink")
-{a => "like", b => "love"} 
-# => {#<Color:0x00007fd92f233ce0 @name="pink">=>"like", #<Color:0x00007fd92f2c9ec0 @name="pink">=>"love"}
-
-
+{a => "like", b => "love"} # => {#<Color:0x00007fd92f233ce0 @name="pink">=>"like", #<Color:0x00007fd92f2c9ec0 @name="pink">=>"love"}
+# Hashクラスのキーが同じと判定されるのは、①キーの値のハッシュ値が同じ、かつ、②eql?メソッドで比較してtrueになるとき
+# 内部ではObject#eql?が呼び出されるため、aとbのメモリを比較する。そのためaとbを違うキーであると判定する。
 
 class Color
   attr_reader(:name)
@@ -23,7 +27,7 @@ class Color
   end
 
   def hash
-    name.hash
+    name.hash # 今はそういうものだと割り切ろう 
   end
 
   def eql? (other)
@@ -34,10 +38,10 @@ a = Color.new("pink")
 b = Color.new("pink")
 {a => "like", b => "love"} 
 # => {#<Color:0x00007fd92f248988 @name="pink">=>"love"}
-# あえてeql?メソッドがある理由は、暗黙的なキャストで同一視されるとキーの識別の場合では困るから
+# Object#==があるのにあえてObject#eql?が必要な理由は、==には暗黙的なキャストがある。そのため違うキーを同一視されてしまうと困るから。
 
 
-
+# ④===
 # case when文では、===で比較している。whenで渡されたものを左辺にしている。
 /er/ === "Tyler" # => true  オーバーライドされたRegexp#===を呼び出している。
 "Tyler" === /er/ # => false Object#===を呼び出している。Object#==の戻り値を返す。
@@ -46,8 +50,7 @@ b = Color.new("pink")
 
 [1,2,3].is_a?(Array) # => true
 [1,2,3] === Array    # => false Object#===
-Array === [1,2,3]    # => true  Array::===
-# ドキュメントには出てこないが、クラスメソッドとしての===を持っていて、右辺が自分と同じ型ならtrueを返す。
+Array === [1,2,3]    # => true  Array::=== ドキュメントには出てこないがクラスメソッドとして===を持っていて、右辺が自分と同じ型ならtrueを返す。
 
 
 =begin

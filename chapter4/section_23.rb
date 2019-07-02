@@ -6,7 +6,6 @@ rescue => e
 end
 # ほとんど全てのエラーを飲み込んでしまう。AgumentError, LocalJumpErrorのようなコードミスも含めて。
 
-# これはよくない。
 begin
   task.perform
 rescue AgumentError, LocalJumpError,
@@ -16,8 +15,8 @@ rescue => e
   logger.error("task failed: #{e}")
   # 例外を飲み込み、タスクを中止する。
 end
-# StandardErrorを先に捕まえてしまうなど、先に範囲の広い例外をキャッチしてしまうかもしれない。
-# 意図が伝わりにくい。後で消されるかもしれない。
+# 先に範囲の広い例外をキャッチしてしまうかもしれない。そうなると貴重なヒントを失ってしまう。
+# 意図が伝わりにくい。そのため後で消されるかもしれない。
 
 # 自作の例外クラスを作るメリットがここではっきりする
 begin
@@ -41,7 +40,7 @@ rescue => e
 ensure
   # ...
 end
-# service.record(e)で例外が発生すると、元の例外情報を捨てて、rescue節のスコープを抜けて、新しい例外処理が始まってしまう。
+# 注意：rescue節の中で例外が発生すると、元の例外情報を捨てて新しい例外処理が始まってしまう。
 
 # 元の例外を引数として受け取る専用メソッドを作って、raiseでその例外を送れば解消する
 def send_to_support_staff (e)
