@@ -10,10 +10,11 @@ module SuperForwardable
   def def_delegators_with_super (target, *methods)
     methods.each do |method|
       target_method = "#{method}_with_super".to_sym
-      def_delegator(target, method, target_method) # メソッド名_with_superという名前でターゲットオブジェクトのそのメソッドを呼び出せる。
+      def_delegator(target, method, target_method) # メソッド名_with_superという名前でターゲットオブジェクトのそのメソッドを呼び出せるようにする。
 
       define_method(method) do |*args, &block| # このブロックはインスタンスメソッドmethod(=freeze, taint, untaint)を定義するだけ。
-        send(target_method, *args, &block) # このRaisingHashクラスへのtarget_method呼び出しは、上のdef_delegatorによってtarget(=@hash)へのmethod呼び出しになる
+        send(target_method, *args, &block) # self.sendとなり、selfは被extendオブジェクト（＝RisingHash）。
+        # このRaisingHashクラスへのtarget_method呼び出しは、上のdef_delegatorによってtarget(=@hash)へのmethod呼び出しになる
         super(*args, &block)
       end
     end
