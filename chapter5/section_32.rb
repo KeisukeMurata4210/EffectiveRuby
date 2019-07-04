@@ -62,10 +62,35 @@ class StringExtra
 end
 
 # それでもまだ、コアクラスを書き換えたいときはRefineMents
+module OnlySpace
+  refine(String) do # パッチを当てる
+    def only_space?
+      # ...
+    end
+  end
+end
 
+class Person
+  using(OnlySpace) # これでアクティブ化する
+
+  def initialize (name)
+    @name = name
+  end
+
+  def valid?
+    !@name.only_space? # Personを継承するクラスのインスタンスから、直接only_space?は呼び出せない。valid?なら呼び出せ、動作する。
+  end
+
+  def display (io=$stdout)
+    io.puts(@name) # puts内に入った途端に非アクティブ化される。
+  end
+end
+# 上のコードだとPerson内でしかアクティブにならない。これがモンキーパッチより安全な理由
 
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞
-
+・コアクラスを書き換えたいときは、まずラップクラスの作成を考える。
+・それで足りないときはRefinementsを使う。
+・Refinementsを使うときは、①Rubyのバージョン、②レキシカルスコープごとにusingでモジュールをアクティブ化、に注意する。
 =end
