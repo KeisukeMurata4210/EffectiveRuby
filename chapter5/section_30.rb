@@ -95,7 +95,7 @@ class AuditDecorator
     @logger = Logger.new($stdout)
 
     @object.public_methods.each do |name|
-      define_singleton_method(name) do |*args, &block|
+      define_singleton_method(name) do |*args, &block| # define_methodだとインスタンスメソッド、define_singleton_methodだと特異メソッドを定義する
         @logger.info("calling '#{name}' on #{@object.inspect}")
         @object.send(name, *args, &block)
       end
@@ -109,7 +109,10 @@ end
 def respond_to_missing? (name, include_private)
   @hash.respond_to?(name, include_private) || super
 end
+# respond_to?で返せるメソッドがないとき、respond_to_missing?が呼び出される
 
+
+# Object#methodを呼び出すときにrespond_to_missing?がtrueを返す状態にして呼び出すと、method_missing呼び出しをカプセル化するMethodオブジェクトを返す
 
 =begin
 ＜この項目で気づいたこと・学んだこと＞

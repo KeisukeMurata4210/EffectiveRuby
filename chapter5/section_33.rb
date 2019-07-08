@@ -11,7 +11,7 @@ module LogMethod
     # オリジナルのメソッドを交換する
     define_method(method) do |*args, &block|
       $stdout.puts("calling method '#{method}'")
-      result = send(orig, *args, &block)
+      result = send(orig, *args, &block) # self変数がレシーバになり、selfにはインクルードされたオブジェクトが呼び出される
       $stdout.puts("'#{method}' returned #{result.inspect}")
       result
     end

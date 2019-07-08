@@ -13,7 +13,7 @@ module OnlySpace
     end
   end
 end
-# 「オブジェクト指向的出ない」「饒舌（くどい）」
+# 「オブジェクト指向的でない」「饒舌（くどい）」
 OnlySpace.only_space?("\r\n") # => true
 
 

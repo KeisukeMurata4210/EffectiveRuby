@@ -25,9 +25,3 @@ class VersionTest < Minitest::Test
     assert_operator(@v1, :<, @v2)
   end
 end
-
-
-=begin
-＜この項目で気づいたこと・学んだこと＞
-
-=end
